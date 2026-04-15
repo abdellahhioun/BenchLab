@@ -13,7 +13,7 @@ enum SensorType {
 }
 
 enum Status {
-  STATUS_UNSPECIFIED = 0;se
+  STATUS_UNSPECIFIED = 0;
   ACTIVE = 1;
   INACTIVE = 2;
   MAINTENANCE = 3;
@@ -38,6 +38,8 @@ message CreateSensorRequest {
   SensorType type = 2;
   string location = 3;
   string unit = 4;
+  Status status = 5;
+  double last_value = 6;
 }
 
 message SensorIdRequest {
