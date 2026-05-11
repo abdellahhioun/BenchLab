@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package benchlab.sensor.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// 1. The "Choice" Lists (Dictionaries)
+enum SensorType {
+  SENSOR_TYPE_UNSPECIFIED = 0;
+  TEMPERATURE = 1;
+  PRESSURE = 2;
+  VIBRATION = 3;
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  INACTIVE = 2;
+  MAINTENANCE = 3;
+}
+
+// 2. The "Sensor Box" (The Model)
+message Sensor {
+  string id = 1; 
+  string name = 2;
+  SensorType type = 3;    // Linked to the Enum above!
+  string location = 4;
+  string unit = 5;
+  Status status = 6;      // Linked to the Enum above!
+  double last_value = 7;
+  google.protobuf.Timestamp last_reading_at = 8; // Renamed to match spec
+  google.protobuf.Timestamp created_at = 9;
+}
+
+// 3. The "Action Envelopes" (Requests/Responses)
+message CreateSensorRequest {
+  string name = 1;
+  SensorType type = 2;
+  string location = 3;
+  string unit = 4;
+  Status status = 5;
+  double last_value = 6;
+}
+
+message SensorIdRequest {
+  string id = 1;
+}
+
+message SensorList {
+  repeated Sensor sensors = 1; // "repeated" means a List/Array in Python
+}
+
+message Empty {}
+
+// 4. The "Post Office" (The Service) 
+service SensorService {
+  rpc CreateSensor (CreateSensorRequest) returns (Sensor);
+  rpc GetSensor (SensorIdRequest) returns (Sensor);
+  rpc ListSensors (Empty) returns (SensorList);
+  rpc UpdateSensor (Sensor) returns (Sensor);
+  rpc DeleteSensor (SensorIdRequest) returns (Empty);
+}
